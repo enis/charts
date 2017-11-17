@@ -1,0 +1,14 @@
+#
+# A ConfigMap spec for phpldapadmin that map directly to files under 
+#
+{{- if .Values.phpldapadmin.customConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "phpldapadmin.fullname" . }}-customconfig-configmap
+data:
+{{- range $key, $val := .Values.phpldapadmin.customConfig }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end -}}

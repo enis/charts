@@ -1,0 +1,15 @@
+name: phpldapadmin
+home: http://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page
+version: 0.1.0
+appVersion: 1.2.3
+description: Web-based LDAP browser to manage your LDAP server
+icon: http://phpldapadmin.sourceforge.net/wiki/images/d/d4/Logo.jpg
+keywords:
+  - ldap
+  - phpldapadmin
+sources:
+  - https://github.com/kubernetes/charts
+maintainers:
+  - name: enis
+    email: enis@apache.org
+engine: gotpl

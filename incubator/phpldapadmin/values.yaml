@@ -1,0 +1,49 @@
+# Default values for phpldapadmin.
+# This is a YAML-formatted file.
+
+phpldapadmin:
+  replicas: 1
+  image:
+      # From repository https://github.com/osixia/docker-phpLDAPadmin
+      name: osixia/phpldapadmin
+      tag: 0.7.0
+  ## Specify an imagePullPolicy (Required)
+  ## It's recommended to change this to 'Always' if the image tag is 'latest'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+  ##
+  imagePullPolicy: IfNotPresent
+
+  service:
+    enabled: false
+    type: ClusterIP
+  httpInternalPort: 80
+  httpExternalPort: 80
+  sslInternalPort: 443
+  sslExternalPort: 443
+
+  # Default configuration for phpldapadmin as environment variables. These get injected directly in the container.
+  # Use the env variables from https://github.com/osixia/docker-phpLDAPadmin
+  env:
+    PHPLDAPADMIN_HTTPS: "true"
+
+  # PHPLDAPADMIN_LDAP_HOSTS is managed as a secret rather than a regular env variable, because 
+  # the config can contain the bind password
+  ldapHosts: "modest-chinchilla-openldap-service.default.svc.cluster.local"
+      # "- modest-chinchilla-openldap-service.default.svc.cluster.local:
+      #    - server:
+      #      - tls: true
+      #    - login:
+      #      - bind_id: cn=admin,dc=example,dc=org
+      #      - bind_pass: admin"
+
+  # Custom phpldapadmin configuration files used to override default settings
+  customConfig:
+    #config.php: |-
+
+  resources: {}
+   # requests:
+   #   cpu: "100m"
+   #   memory: "256Mi"
+   # limits:
+   #   cpu: "500m"
+   #   memory: "512Mi"

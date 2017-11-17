@@ -1,0 +1,53 @@
+#
+# A Deployment spec for phpldapadmin
+#
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name:  {{ template "phpldapadmin.fullname" . }}
+  labels:
+    app: {{ template "phpldapadmin.fullname" . }}
+    version: {{ .Chart.Version }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.phpldapadmin.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "phpldapadmin.fullname" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "phpldapadmin.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ template "phpldapadmin.name" . }}
+        image: "{{ .Values.phpldapadmin.image.name }}:{{ .Values.phpldapadmin.image.tag }}"
+        imagePullPolicy: {{ .Values.phpldapadmin.imagePullPolicy | quote }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.phpldapadmin.httpInternalPort }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "phpldapadmin.fullname" . }}-env-configmap
+        - secretRef:
+            name: {{ template "phpldapadmin.fullname" . }}-secret
+
+        {{- if .Values.phpldapadmin.customConfig }}
+        volumeMounts:
+        - name: customconfig
+          mountPath: /container/service/phpldapadmin/assets/config/
+        {{- end }}
+
+        resources:
+{{ toYaml .Values.phpldapadmin.resources | indent 10 }}
+
+      {{- if .Values.phpldapadmin.customConfig }}
+      volumes:
+      - name: customconfig
+        configMap:
+          name: {{ template "phpldapadmin.fullname" . }}-customConfig-configmap
+      {{- end }}

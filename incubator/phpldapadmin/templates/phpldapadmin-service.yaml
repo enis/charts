@@ -1,0 +1,29 @@
+{{- if .Values.phpldapadmin.service.enabled }}
+#
+# Service spec for phpldapadmin
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "phpldapadmin.fullname" . }}-service
+  labels:
+    app: {{ template "phpldapadmin.fullname" . }}
+    version: {{ .Chart.Version }}  
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "-" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}  
+spec:
+  type: {{ .Values.phpldapadmin.service.type | quote }}
+  selector:
+    app: {{ template "phpldapadmin.fullname" . }}
+    release: {{ .Release.Name }}
+  ports:
+  - name: http-port
+    protocol: TCP
+    port: {{ .Values.phpldapadmin.httpExternalPort }}
+    targetPort: {{ .Values.phpldapadmin.httpInternalPort }}
+  - name: ssl-port
+    protocol: TCP
+    port: {{ .Values.phpldapadmin.sslExternalPort }}
+    targetPort: {{ .Values.phpldapadmin.sslInternalPort }}
+{{- end -}}

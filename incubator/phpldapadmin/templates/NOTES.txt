@@ -1,0 +1,10 @@
+phpLDAPadmin has been installed. You can access the server from within the k8s cluster using:
+  
+  {{ template "phpldapadmin.fullname" . }}-service.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.phpldapadmin.httpExternalPort }}
+
+
+You can configure port-forwarding to access the pod from your local machine:
+  kubectl port-forward  `kubectl get pods -l "app={{ template "phpldapadmin.fullname" . }}" -o name  | cut -d "/" -f 2` 10443:443 8080:80
+
+Then:
+  open https://localhost:10443
